@@ -1,0 +1,68 @@
+{% extends 'layout/base.html' %}
+
+{% block content %}
+	<form role="form" action="{% url 'new_solicitud' %}" method="POST">
+		{% csrf_token %}
+		<div class="form-group">
+			<label>{{ form.peso_aprox.label }}</label>
+			{{ form.peso_aprox }}
+		</div>
+		<div class="form-group">
+			<label>{{ form.bodega_material.label }}</label>
+			{{ form.bodega_material }}
+		</div>
+		<div class="row">
+			<div id="price"></div>
+		</div>
+		<br>
+		<div class="form-group">
+			<button type="submit" class="btn btn-success">Hacer solicitud</button>
+		</div>
+	</form>
+{% endblock content %}
+
+{% block content_script %}
+	var bodega_material = 0;
+	var peso = $('#id_peso_aprox');
+	$('#id_bodega_material').change(function(){
+		$('#price').empty();
+		if(peso.val() != ''){
+			$.get("/solicitudes/find-bodega", {material: $(this).val()}, function(response){
+				if(response != ''){
+					$('#price').append('<h3>Bodegas disponibles</h3>');
+					for(var data in response){
+						$('#price').append(
+							'<div class="col-xs-6">'+
+								'<p><strong>Bodega: </strong>'+response[data].bodega+'</p>'+
+								'<p><strong>Dirección: </strong>'+response[data].bodega_dir+'</p>'+
+								'<p><strong>Precio aproximado a pagar: </strong>'+(peso.val() * response[data].precio)+'</p>'+
+								'<a href="#" id="select" val="'+response[data].pk+'" class="btn btn-info">Seleccionar</a>'+
+							'</div>'
+						);
+					}
+				}else{
+					$('#price').append('<h3>No hay bodegas disponibles</h3>');
+					bodega_material = 0;
+				}
+			});
+		}else{
+			alert('Ingresa primero el peso aproximado');
+			peso.focus();
+		}
+	});
+	$('html').on('click', '#select', function(){
+		bodega_material = $(this).attr('val');
+		return false;
+	});
+	$("form").submit(function(){
+		if(bodega_material == 0){
+			alert('Debe seleccionar una bodega');
+		}else{
+			$.get("/solicitudes/save", {bodega_material: bodega_material, peso_aprox: peso.val()}, function(response){
+				alert(response.msg);
+				window.location.href = "{% url 'solicitud_user' %}"
+			});
+		}
+		return false;
+	});
+{% endblock content_script %}

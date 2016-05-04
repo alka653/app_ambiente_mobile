@@ -1,0 +1,21 @@
+{% extends 'layout/base.html' %}
+
+{% block content %}
+	<h2>Lista de solicitudes</h2>
+	<div class="row text-left">
+		{% for solicitud in solicitudes %}
+			<div class="col-sm-6">
+				<h4>{{ solicitud.material }}</h4>
+				<ul>
+					{% for s_user in solicitud.solicituduser_set.all %}
+						<li><strong>Fecha: </strong>{{ s_user.fecha }}</li>
+						<ul>
+							<li><strong>Usuario: </strong>{{ s_user.user.first_name }}</li>
+							<li><strong>Peso: </strong>{{ s_user.peso_aprox }}</li>
+						</ul>
+					{% endfor %}
+				</ul>
+			</div>
+		{% endfor %}
+	</div>
+{% endblock content %}

@@ -1,0 +1,20 @@
+{% extends 'layout/base.html' %}
+
+{% block content %}
+	<h2>Mis solicitudes</h2>
+	<div class="row text-left">
+	{% for solicitud in solicitudes %}
+		<div class="col-xs-6">
+			<p><strong>Fecha: </strong>{{ solicitud.fecha }}</p>
+			<p><strong>Material: </strong>{{ solicitud.bodega_material.material.nombre }}</p>
+			<p><strong>Peso: </strong>{{ solicitud.peso_aprox }}</p>
+			<p><strong>Bodega: </strong>{{ solicitud.bodega_material.bodega.nombre }}</p>
+			<p><strong>Dirección bodega: </strong>{{ solicitud.bodega_material.bodega.direccion }}</p>
+		</div>
+	{% endfor %}
+	<br>
+	<div class="text-center">
+		<a href="{% url 'new_solicitud' %}" class="btn btn-success" id="load-page">Nueva Solicitud</a>
+	</div>
+	</div>
+{% endblock content %}
