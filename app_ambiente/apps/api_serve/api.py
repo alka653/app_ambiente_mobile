@@ -2,11 +2,13 @@ from tastypie.authentication import ApiKeyAuthentication, BasicAuthentication, M
 from tastypie.authorization import *
 from app_ambiente.apps.solicitudes.models import *
 from tastypie.resources import ALL_WITH_RELATIONS
+from tastypie.validation import FormValidation
 from django.contrib.auth import get_user_model
 from tastypie.serializers import Serializer
 from .corsresource import CorsResourceBase
 from tastypie.models import ApiKey
 from tastypie.resources import *
+from app_ambiente.apps.solicitudes.forms import SolicitudUserForm
 
 User = get_user_model()
 cont = 0
@@ -14,7 +16,7 @@ cont = 0
 class LoginResource(CorsResourceBase, ModelResource):
 	class Meta:
 		queryset = User.objects.all()
-		fields = ["first_name", "last_name", "username"]
+		fields = ["first_name", "last_name", "username", "pk"]
 		allowed_method = ['get']
 		resource_name = 'login'
 		authorization = DjangoAuthorization()
@@ -26,20 +28,19 @@ class LoginResource(CorsResourceBase, ModelResource):
 		bundle.data['api_key'] = ApiKey.objects.get_or_create(user = user)[0].key
 		return bundle
 
-class ExpenseAuthorization(Authorization):
-	def read_list(self, object_list, bundle):
-		return object_list.filter(user = bundle.request.user)
-
 class SendSolicitudResource(ModelResource):
 	class Meta:
 		queryset = SolicitudUser.objects.all()
 		resource_name = 'send_solicitud'
-		authorization = ExpenseAuthorization()
 		filtering = {
 			"peso_aprox": ALL_WITH_RELATIONS,
 			"user": ALL_WITH_RELATIONS,
 			"bodega_material": ALL_WITH_RELATIONS,
 		}
+
+	def hydrate(self, bundle):
+		bundle.obj.user = bundle.request.user
+		return bundle
 
 class TipoMaterialResource(ModelResource):
 	class Meta:

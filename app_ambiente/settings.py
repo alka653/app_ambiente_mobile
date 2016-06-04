@@ -26,7 +26,6 @@ TEMPLATE_DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
 # Application definition
 
 INSTALLED_APPS = (
@@ -99,7 +98,7 @@ STATIC_URL = '/static/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR,'app_ambiente/static')
 
-MEDIA_URL ='/image/'
+MEDIA_URL ='/img/'
 
 STATICFILES_DIRS = (
 	os.path.join(BASE_DIR, 'app_ambiente/static'),
