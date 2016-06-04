@@ -1,7 +1,8 @@
 Django==1.7.1
 django-tastypie==0.12.1
-gunicorn==19.6.0
+gunicorn==19.5.0
 Pillow==2.8.0
+psycopg2==2.6.1
 python-dateutil==2.5.3
 python-mimeparse==1.5.1
 six==1.10.0
